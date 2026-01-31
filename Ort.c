@@ -13,7 +13,7 @@ void print_help();
 int main(int argc, char *argv[]){
     // Variables
     int opt, alt = 10, diff = 2, mode = 1, dict_size, line_n;
-    char *pIn_file = NULL, *pOut_file = NULL, *pDict_name = "words", *pDict= NULL, **lines = NULL;
+    char *pIn_file = NULL, *pOut_file = NULL, *pDict_name = "words", **pDict= NULL, **lines = NULL;
     FILE *pTemp_file;
 
     // Optional arguments for execution

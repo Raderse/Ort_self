@@ -90,7 +90,7 @@ int reader(char ***lines, char *file){
         FILE *fptr;
         fptr = fopen(file, "r");
         if (fptr == NULL){
-            prinf("File not found");
+            printf("File not found");
             exit(EXIT_FAILURE);
         }
         while (fgets(temp, size, fptr)){
