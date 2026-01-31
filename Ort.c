@@ -17,7 +17,7 @@ int main(int argc, char *argv[]){
     FILE *pTemp_file;
 
     // Optional arguments for execution
-    while ((opt = getopt(argc, argv, "hi:o:d:a:n:m")) != -1)
+    while ((opt = getopt(argc, argv, "hi:o:d:a:n:m:")) != -1)
     {
         switch (opt)
         {
