@@ -47,7 +47,7 @@ int main(int argc, char *argv[]){
             break;
 
         case 'd': // Defines dictionary
-            if (!(pTemp_file = (optarg,"r"))){
+            if (!(pTemp_file = fopen(optarg,"r"))){
                 printf("Dictionary cannot be opened");
                 exit(EXIT_FAILURE);
             }
