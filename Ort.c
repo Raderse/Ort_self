@@ -81,5 +81,17 @@ int main(int argc, char *argv[]){
 
 // Functions definitions
 void print_help(){
-    printf("Help");
+    printf("Uso correto: ./ortografia -h {help} -a {alternativas} -m {modo} -i {ficheiro in} -o {ficheiro out} -d {dicionario} -n {diferenças}\n"
+        "Opções:\n\v"
+        "\t-h --- apresenta a mensagem de ajuda\n"
+        "\t-a --- numero maximo de alternativas a apresentar, por omissão são 10\n"
+        "\t-m --- modo do corretor ortografia de 1 a 3\n"
+        "\t-i --- ficheiro de texto a corrigir caso não seja dada está opção sera lido pelo terminal\n"
+        "\t-o --- ficheiro de saida apresentando a resposta dependendo do modo, caso nao seja dado sera apresentado no terminal\n"
+        "\t-d --- dicionario a ser utilizado por padrão usara o dicionario words\n"
+        "\t-n --- numero maximo de difenças para ser aceite, por omissão é 2\n\v"
+        "Modo 1: O modo 1 deteta os erros encontradados em cada linha de texto, o mesmo apresenta primeiramente a linha e depois apresenta os erros\n"
+        "Modo 2: O modo 2 deteta também os erros de cada frase mas também vai apresentar sugestões de alternativas para cada palavra errada seguindo o numero maximo\n"
+        "de diferenças e seguindo o numero maximo de sugestoes\n"
+        "Modo 3: O modo 3 pega na primeira alternativa do modo 2 e corrige pela palavra errada no ficheiro de texto\n");
 }
