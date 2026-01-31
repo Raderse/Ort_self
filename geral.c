@@ -65,6 +65,47 @@ int sizer(FILE *fptr){
     return count;    
 }
 
+// Checks if single char is valid
 int valid(char c){
     return (isalpha(c) || strchr("àáéíóúãõâêôçÀÁÉÍÓÚÃÕÂÊÔÇ",c));
+}
+
+// Reads user input of file provided and returns line count
+int reader(char ***lines, char *file){
+    int count = 0, size = 1000;
+    char temp[size];
+    if (file == NULL){ // User input
+        while (fgets(temp, size, stdin))
+        {
+            temp[strspn(temp,"\n")] = '\0'; // Replaces newline symbol with end of string
+            *lines = realloc(*lines, (count+1)*sizeof(char *));
+            (*lines)[count] = malloc(strlen(temp)+1);
+            strcpy((*lines)[count], temp);
+            count++;
+        }
+        return count;
+        
+    }
+    else{ // File as input
+        FILE *fptr;
+        fptr = fopen(file, "r");
+        if (fptr == NULL){
+            prinf("File not found");
+            exit(EXIT_FAILURE);
+        }
+        while (fgets(temp, size, fptr)){
+            count++;
+        }
+        *lines = realloc(*lines,(count+1)*sizeof(char *));
+        count = 0;
+        rewind(fptr);
+        while (fgets(temp, size, fptr)){
+            temp[strspn(temp,"\n")] = '\0'; // Replaces newline symbol with end of string
+            (*lines)[count] = malloc(strlen(temp)+1);
+            strcpy((*lines)[count], temp);
+            count++;
+        }
+        fclose(fptr);
+        return count;
+    }
 }

@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include "geral.h"
+#include "mode1.h"
 
 // Function declarations
 void print_help();
@@ -10,9 +12,11 @@ void print_help();
 
 int main(int argc, char *argv[]){
     // Variables
-    int opt, alt = 10, diff = 2, mode = 1;
-    char *pIn_file = NULL, *pTemp_file = NULL, *pOut_file = NULL, *pDict = "words";
+    int opt, alt = 10, diff = 2, mode = 1, dict_size, line_n;
+    char *pIn_file = NULL, *pOut_file = NULL, *pDict_name = "words", *pDict= NULL, **lines = NULL;
+    FILE *pTemp_file;
 
+    // Optional arguments for execution
     while ((opt = getopt(argc, argv, "hi:o:d:a:n:m")) != -1)
     {
         switch (opt)
@@ -48,7 +52,7 @@ int main(int argc, char *argv[]){
                 exit(EXIT_FAILURE);
             }
             fclose(pTemp_file);
-            pDict = optarg;
+            pDict_name = optarg;
             break;
 
         case 'a': // Alternatives
@@ -76,7 +80,23 @@ int main(int argc, char *argv[]){
             break;
         }
     }
+    dict_size = dict_processing(&pDict, pDict_name);
+
+    line_n = reader(&lines, pIn_file);
+    switch (mode)
+    {
+    case 1:
+        
+        break;
     
+    case 2:
+
+        break;
+
+    case 3:
+
+        break;
+    }
 }
 
 // Functions definitions

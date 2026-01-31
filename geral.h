@@ -8,5 +8,6 @@ int dict_processing(char ***storage, char *file);
 void free_dict(char ***dict, int size);
 int sizer(FILE *fptr);
 int valid(char c);
+int reader(char ***lines, char *file);
 
 #endif
