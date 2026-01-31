@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 // Used for qsort (not case sensitive)
 int compare_dic(const void *a, const void *b) {
@@ -62,4 +63,8 @@ int sizer(FILE *fptr){
     }
     fseek(fptr, start, SEEK_SET);
     return count;    
+}
+
+int valid(char c){
+    return (isalpha(c) || strchr("àáéíóúãõâêôçÀÁÉÍÓÚÃÕÂÊÔÇ",c));
 }
