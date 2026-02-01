@@ -13,11 +13,11 @@ void print_help();
 int main(int argc, char *argv[]){
     // Variables
     int opt, alt = 10, diff = 2, mode = 1, dict_size, line_n;
-    char *pIn_file = NULL, *pOut_file = NULL, *pDict_name = "words", *pDict= NULL, **lines = NULL;
+    char *pIn_file = NULL, *pOut_file = NULL, *pDict_name = "words", **pDict= NULL, **lines = NULL;
     FILE *pTemp_file;
 
     // Optional arguments for execution
-    while ((opt = getopt(argc, argv, "hi:o:d:a:n:m")) != -1)
+    while ((opt = getopt(argc, argv, "hi:o:d:a:n:m:")) != -1)
     {
         switch (opt)
         {
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]){
             break;
 
         case 'd': // Defines dictionary
-            if (!(pTemp_file = (optarg,"r"))){
+            if (!(pTemp_file = fopen(optarg,"r"))){
                 printf("Dictionary cannot be opened");
                 exit(EXIT_FAILURE);
             }

@@ -18,8 +18,8 @@ int dict_processing(char ***storage, char *file){
     int wordn = 0, size = 10000, len;
     char string[size];
     fptr = fopen(file, "r");
-    if (!(fptr = NULL)){
-        printf("Dictionary could not be opened");
+    if (fptr == NULL){
+        printf("Dictionary could not be opened for processing");
         exit(EXIT_FAILURE);
     }
     while (fgets(string,size,fptr)){
@@ -90,7 +90,7 @@ int reader(char ***lines, char *file){
         FILE *fptr;
         fptr = fopen(file, "r");
         if (fptr == NULL){
-            prinf("File not found");
+            printf("File not found");
             exit(EXIT_FAILURE);
         }
         while (fgets(temp, size, fptr)){
