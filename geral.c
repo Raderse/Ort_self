@@ -77,7 +77,7 @@ int reader(char ***lines, char *file){
     if (file == NULL){ // User input
         while (fgets(temp, size, stdin))
         {
-            temp[strspn(temp,"\n")] = '\0'; // Replaces newline symbol with end of string
+            temp[strcspn(temp,"\n")] = '\0'; // Replaces newline symbol with end of string
             *lines = realloc(*lines, (count+1)*sizeof(char *));
             (*lines)[count] = malloc(strlen(temp)+1);
             strcpy((*lines)[count], temp);
