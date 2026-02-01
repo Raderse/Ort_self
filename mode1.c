@@ -47,5 +47,5 @@ void find_error(char **lines, int lines_n, char **dict, int size_dict, char *out
         }
     }
     free(temp);
-    fclose(fptr);
+    if (fptr != NULL) fclose(fptr);
 }
