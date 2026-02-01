@@ -86,7 +86,7 @@ int main(int argc, char *argv[]){
     switch (mode)
     {
     case 1:
-        
+        find_error(lines, line_n, pDict, dict_size, pOut_file);
         break;
     
     case 2:
