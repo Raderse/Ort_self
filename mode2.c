@@ -6,3 +6,15 @@
 void suggesting(char **lines, int lines_n, char **dict, int dict_size, char *out_file, int max_diff, int alts){
 
 }
+
+Alternative *add_node(Alternative *head, Alternative *new){
+
+}
+
+void free_Alternative(Alternative *head){
+
+}
+
+int in_Alternatives(Alternative *head, char *word){
+
+}
