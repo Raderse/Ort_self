@@ -2,6 +2,7 @@
 #include "geral.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void suggesting(char **lines, int lines_n, char **dict, int dict_size, char *out_file, int max_diff, int alts){
 
@@ -24,5 +25,12 @@ void free_Alternative(Alternative *head){
 }
 
 int in_Alternatives(Alternative *head, char *word){
-
+    while (head != NULL)
+    {
+        if (strcmp(head->word,word) == 0){
+            return 1;
+        }
+        head = head->next;
+    }
+    return 0;
 }
