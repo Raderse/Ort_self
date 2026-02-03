@@ -13,5 +13,6 @@ void suggesting(char **lines, int lines_n, char **dict, int dict_size, char *out
 Alternative *add_node(Alternative *head, Alternative *new);
 void free_Alternative(Alternative *head);
 int in_Alternatives(Alternative *head, char *word);
+int is_valid_alternative(char *word, char *dict, int *dict_size, int max_diff);
 
 #endif
