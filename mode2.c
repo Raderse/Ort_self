@@ -12,7 +12,15 @@ Alternative *add_node(Alternative *head, Alternative *new){
 }
 
 void free_Alternative(Alternative *head){
-
+    Alternative *temp;
+    temp = head;
+    while (temp != NULL)
+    {
+        temp = head;
+        head = head->next;
+        free(temp->word);
+        free(temp);
+    }
 }
 
 int in_Alternatives(Alternative *head, char *word){
