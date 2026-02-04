@@ -128,7 +128,7 @@ char **remove_punct(char **lines, int lines_n){
         }
         char *dst = clean;
         while (*src) {
-            if (!ispunct((unsigned char)*src) && *src != '\'') {
+            if (!ispunct((unsigned char)*src) || *src == '\'') {
                 *dst++ = *src;
             }
             src++;
