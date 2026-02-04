@@ -9,7 +9,7 @@
 void find_error(char **lines, int lines_n, char **dict, int size_dict, char *out_file){
     int err_count, pos;
     char *temp; // Will store word to verify with dict
-    FILE *fptr;
+    FILE *fptr = NULL;
     char **lines_no_punct;
     lines_no_punct = remove_punct(lines, lines_n);
     if (out_file != NULL){
