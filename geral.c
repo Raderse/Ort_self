@@ -112,3 +112,29 @@ int reader(char ***lines, char *file){
         return count;
     }
 }
+
+char **remove_punct(char **lines, int lines_n){
+    char **result = malloc(lines_n * sizeof(char *));
+    if (!result) return NULL;
+    for (size_t i = 0; i < lines_n; i++) {
+        char *src = lines[i];
+        char *clean = malloc(strlen(src) + 1);
+        if (!clean) {
+            for (size_t j = 0; j < i; j++) {
+                free(result[j]);
+            }
+            free(result);
+            return NULL;
+        }
+        char *dst = clean;
+        while (*src) {
+            if (!ispunct((unsigned char)*src) && *src != '\'') {
+                *dst++ = *src;
+            }
+            src++;
+        }
+        *dst = '\0';
+        result[i] = clean;
+    }
+    return result;
+}

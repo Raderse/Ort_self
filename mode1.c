@@ -26,11 +26,10 @@ void find_error(char **lines, int lines_n, char **dict, int size_dict, char *out
         pos = 0;
 
         for (int j = 0; j <= (int)strlen(lines[i]); j++){ // Each character
-if (lines[i][j] == ' ' || lines[i][j] == '\0' || lines[i][j] == '\n' || lines[i][j] == '\t') {
+            if (lines[i][j] == ' ' || lines[i][j] == '\0' || lines[i][j] == '\n' || lines[i][j] == '\t'){ // Add cases for '
                 if (pos > 0) {
                     temp[pos] = '\0'; // Properly terminate the word string
 
-                    // FIX: Pass the address of temp (&temp) so bsearch sends char** to compare_dic
                     if (bsearch(&temp, dict, size_dict, sizeof(char *), compare_dic) == NULL){
                         if (err_count == 0){
                             if (out_file == NULL) printf("%d: %s \n", i, lines[i]);
