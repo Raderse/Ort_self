@@ -1,7 +1,7 @@
 #ifndef MODE2_H
 #define MODE2_H
 
-typedef struct _Alternative
+typedef struct Alternative
 {
     char *word;
     int diff;

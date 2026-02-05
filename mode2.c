@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 void suggesting(char **lines, int lines_n, char **dict, int dict_size, char *out_file, int max_diff, int alts){
 
