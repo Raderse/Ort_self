@@ -86,7 +86,7 @@ int in_Alternatives(Alternative *head, char *word){
     return 0;
 }
 
-int is_valid_alternative(char *word, char **dict, int dict_size, int max_diff){
+Alternative *find_alternatives(char *word, char **dict, int dict_size, int max_diff){
 
 }
 
