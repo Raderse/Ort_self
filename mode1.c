@@ -9,7 +9,9 @@
 void find_error(char **lines, int lines_n, char **dict, int size_dict, char *out_file){
     int err_count, pos;
     char *temp; // Will store word to verify with dict
-    FILE *fptr;
+    FILE *fptr = NULL;
+    char **lines_no_punct;
+    lines_no_punct = remove_punct(lines, lines_n);
     if (out_file != NULL){
         fptr = fopen(out_file, "w");
         if (fptr == NULL){
@@ -25,8 +27,8 @@ void find_error(char **lines, int lines_n, char **dict, int size_dict, char *out
         err_count = 0;
         pos = 0;
 
-        for (int j = 0; j <= (int)strlen(lines[i]); j++){ // Each character
-            if (lines[i][j] == ' ' || lines[i][j] == '\0' || lines[i][j] == '\n' || lines[i][j] == '\t'){ // Add cases for '
+        for (int j = 0; j <= (int)strlen(lines_no_punct[i]); j++){ // Each character
+            if (lines_no_punct[i][j] == ' ' || lines_no_punct[i][j] == '\0' || lines_no_punct[i][j] == '\n' || lines_no_punct[i][j] == '\t'){
                 if (pos > 0) {
                     temp[pos] = '\0'; // Properly terminate the word string
 
@@ -44,7 +46,7 @@ void find_error(char **lines, int lines_n, char **dict, int size_dict, char *out
                 }
             }
             else {
-                temp[pos++] = lines[i][j];
+                temp[pos++] = lines_no_punct[i][j];
             }
         }
         free(temp);

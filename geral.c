@@ -103,7 +103,7 @@ int reader(char ***lines, char *file){
         count = 0;
         rewind(fptr);
         while (fgets(temp, size, fptr)){
-            temp[strspn(temp,"\n")] = '\0'; // Replaces newline symbol with end of string
+            temp[strcspn(temp,"\n")] = '\0'; // Replaces newline symbol with end of string
             (*lines)[count] = malloc(strlen(temp)+1);
             strcpy((*lines)[count], temp);
             count++;
