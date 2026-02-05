@@ -140,6 +140,6 @@ char **remove_punct(char **lines, int lines_n){
 }
 
 char *word_in_dict(char *word, char **dict, int dict_size){
-        char **result = bsearch(word, dict, dict_size, sizeof(char *), compare_dic);
+        char **result = bsearch(&word, dict, dict_size, sizeof(char *), compare_dic);
     return result ? *result : NULL;
 }

@@ -14,6 +14,8 @@ void suggesting(char **lines, int lines_n, char **dict, int dict_size, char *out
 Alternative *add_node(Alternative *head, Alternative *new){
     Alternative *temp_before, *temp_after;
     if (in_Alternatives(head, new->word) == 1){
+        free(new->word);
+        free(new);
         return head;
     }
     if (head == NULL){ // Empty linked list
@@ -101,7 +103,7 @@ Alternative *find_alternatives(char *word, char **dict, int dict_size, int max_d
             {
                 index++; 
             }
-            if (diff == 1 && dict_word[index] != '\0' && word[index] !='\0'){
+            if (diff == 1 && dict_word[index] == '\0' && word[index] !='\0'){
                 char *part = word_in_dict(&word[index], dict, dict_size);
                 if (part != NULL){
                     int total_length = strlen(dict_word) + 1 + strlen(part) + 1;
@@ -127,7 +129,7 @@ Alternative *find_alternatives(char *word, char **dict, int dict_size, int max_d
                         i_dict++;
                     }
                     else{
-                        if (strcasecmp(&word[i_bad], &dict_word[i_dict]) != 0){
+                        if (tolower(word[i_bad]) != tolower(dict_word[i_dict])){
                             count++;
 
                         }
