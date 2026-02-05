@@ -16,15 +16,18 @@ Alternative *add_node(Alternative *head, Alternative *new){
         return head;
     }
     if (head == NULL){ // Empty linked list
+        update_index(new);
         return new;
     }
     if (new->diff < head->diff){ // Compares number of differences (priority in ordering)
         new->next = head;
+        update_index(new);
         return new;
     }
     else if (new->diff == head->diff){ // If same number of differences in head and new
         if (strcasecmp(new->word,head->word) < 0){ // See if new comes first in the dictionary
             new->next = head;
+            update_index(new);
             return new;
         }
     }
@@ -39,6 +42,7 @@ Alternative *add_node(Alternative *head, Alternative *new){
         else if (temp_after->diff > new->diff){ // If the difference of new is smaller than it comes before tem_after
             temp_before->next = new; 
             new->next = temp_after; // Change pointers so that new is between temp's
+            update_index(head);
             return head;
         }
         else if (temp_after->diff == new->diff){
@@ -50,11 +54,13 @@ Alternative *add_node(Alternative *head, Alternative *new){
             else{ // Functions as if (strcasemp(temp_after->word,new->word) < 0) because new->word is not in the list
                 temp_before->next = new; 
                 new->next = temp_after;
+                update_index(head);
                 return head;              
             }
         }
     }
     temp_before->next = new; // If temp_before points to NULL we reach end of list which means new becomes the new end
+    update_index(head);
     return head;
 }
 
@@ -81,5 +87,19 @@ int in_Alternatives(Alternative *head, char *word){
 }
 
 int is_valid_alternative(char *word, char *dict, int *dict_size, int max_diff){
-    
+
+}
+
+void update_index(Alternative *head){
+    int previous_index = 0;
+    Alternative *current_node;
+    current_node = head;
+    current_node->index = previous_index;
+    previous_index++;
+    current_node = current_node->next;
+    while (current_node != NULL)
+    {
+        current_node->index = previous_index++;
+        current_node = current_node->next;
+    }
 }
