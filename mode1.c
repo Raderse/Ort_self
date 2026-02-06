@@ -9,8 +9,16 @@
 void find_error(char **lines, int lines_n, char **dict, int size_dict, char *out_file){
     int err_count, pos;
     char *temp; // Will store word to verify with dict
-    FILE *fptr;
-    fptr = fopen(out_file, "w");
+    FILE *fptr = NULL;
+    char **lines_no_punct;
+    lines_no_punct = remove_punct(lines, lines_n);
+    if (out_file != NULL){
+        fptr = fopen(out_file, "w");
+        if (fptr == NULL){
+            printf("Output file cannot be opened");
+            exit(EXIT_FAILURE);
+        }
+    }
 
     for (int i = 0; i < lines_n; i++){ // Each line
         temp = malloc(strlen(lines[i]) + 16);
@@ -19,33 +27,29 @@ void find_error(char **lines, int lines_n, char **dict, int size_dict, char *out
         err_count = 0;
         pos = 0;
 
-        for (int j = 0; lines[i][j] != '\0'; j++){ // Each character
-            if (lines[i][j] != ' '){ // Finish logic to include cases with '
-                temp[pos] = lines[i][j];
-                pos++;
-            }
-            else{
-                if (bsearch(temp, dict, size_dict, sizeof(char *), compare_dic) == NULL){
-                    if (err_count == 0){
-                        if (out_file == NULL){
-                            printf("%d: %s \n", i, lines[i]);
+        for (int j = 0; j <= (int)strlen(lines_no_punct[i]); j++){ // Each character
+            if (lines_no_punct[i][j] == ' ' || lines_no_punct[i][j] == '\0' || lines_no_punct[i][j] == '\n' || lines_no_punct[i][j] == '\t'){
+                if (pos > 0) {
+                    temp[pos] = '\0'; // Properly terminate the word string
+
+                    if (bsearch(&temp, dict, size_dict, sizeof(char *), compare_dic) == NULL){
+                        if (err_count == 0){
+                            if (out_file == NULL) printf("%d: %s \n", i, lines[i]);
+                            else fprintf(fptr, "%d: %s \n", i, lines[i]);
+                            err_count++;
                         }
-                        else{
-                            fprintf(fptr, "%d: %s \n", i, lines[i]);
-                        }
-                        err_count++;
+                        
+                        if (out_file == NULL) printf("Erro na palavra: \"%s\" \n", temp);
+                        else fprintf(fptr, "Erro na palavra: \"%s\" \n", temp);
                     }
-                    if (out_file == NULL){
-                        printf("Erro na palavra: \"%s\" \n", temp);
-                    }
-                    else{
-                        fprintf(fptr, "%d: %s \n", i, lines[i]);
-                    }
+                    pos = 0; // Reset for next word
                 }
-                pos = 0;
+            }
+            else {
+                temp[pos++] = lines_no_punct[i][j];
             }
         }
+        free(temp);
     }
-    free(temp);
-    fclose(fptr);
+    if (fptr != NULL) fclose(fptr);
 }

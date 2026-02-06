@@ -77,7 +77,10 @@ int reader(char ***lines, char *file){
     if (file == NULL){ // User input
         while (fgets(temp, size, stdin))
         {
-            temp[strspn(temp,"\n")] = '\0'; // Replaces newline symbol with end of string
+            if (temp[0] == '\n'){ // breaks cycle of get input if first character of line is ENTER/newline
+                break;
+            }
+            temp[strcspn(temp,"\n")] = '\0'; // Replaces newline symbol with end of string
             *lines = realloc(*lines, (count+1)*sizeof(char *));
             (*lines)[count] = malloc(strlen(temp)+1);
             strcpy((*lines)[count], temp);
@@ -100,7 +103,7 @@ int reader(char ***lines, char *file){
         count = 0;
         rewind(fptr);
         while (fgets(temp, size, fptr)){
-            temp[strspn(temp,"\n")] = '\0'; // Replaces newline symbol with end of string
+            temp[strcspn(temp,"\n")] = '\0'; // Replaces newline symbol with end of string
             (*lines)[count] = malloc(strlen(temp)+1);
             strcpy((*lines)[count], temp);
             count++;
@@ -109,4 +112,34 @@ int reader(char ***lines, char *file){
         return count;
     }
 }
-// test
+
+char **remove_punct(char **lines, int lines_n){
+    char **result = malloc(lines_n * sizeof(char *));
+    if (!result) return NULL;
+    for (size_t i = 0; i < lines_n; i++) {
+        char *src = lines[i];
+        char *clean = malloc(strlen(src) + 1);
+        if (!clean) {
+            for (size_t j = 0; j < i; j++) {
+                free(result[j]);
+            }
+            free(result);
+            return NULL;
+        }
+        char *dst = clean;
+        while (*src) {
+            if (!ispunct((unsigned char)*src) || *src == '\'') {
+                *dst++ = *src;
+            }
+            src++;
+        }
+        *dst = '\0';
+        result[i] = clean;
+    }
+    return result;
+}
+
+char *word_in_dict(char *word, char **dict, int dict_size){
+        char **result = bsearch(&word, dict, dict_size, sizeof(char *), compare_dic);
+    return result ? *result : NULL;
+}

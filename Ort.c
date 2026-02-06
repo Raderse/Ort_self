@@ -30,12 +30,12 @@ int main(int argc, char *argv[]){
             if (!pIn_file){     // Pointers return false if = NULL
                 exit(EXIT_FAILURE);
             }
+            strcpy(pIn_file, optarg);
             if (!(pTemp_file = fopen(pIn_file, "r"))){
                 printf("Input file is cannot be opened");
                 exit(EXIT_FAILURE);
             }
             fclose(pTemp_file);
-            strcpy(pIn_file, optarg);
             break;
         
         case 'o': // Defines output file
