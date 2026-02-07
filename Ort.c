@@ -5,6 +5,7 @@
 #include <getopt.h>
 #include "geral.h"
 #include "mode1.h"
+#include "mode2.h"
 
 // Function declarations
 void print_help();
@@ -90,7 +91,7 @@ int main(int argc, char *argv[]){
         break;
     
     case 2:
-
+        suggesting(lines, line_n, pDict, dict_size, pOut_file, diff, alt);
         break;
 
     case 3:
