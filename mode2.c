@@ -90,120 +90,119 @@ int in_Alternatives(Alternative *head, char *word){
 }
 
 // For each word return the head of a list containing all valid alternatives
-Alternative *find_alternatives(char *word, char **dict, int dict_size, int max_diff){
+Alternative *find_alternatives(char *wrong_word, char **dict, int dict_size, int max_diff){
     Alternative *head = NULL;
-    int len_word = strlen(word);
-
-    for (int diff = 1; diff <= max_diff; diff++){ // Checks for each value of difference
-        for (int i = 0; i < dict_size; i++){ // For each word in the dictionary
+    int len_wrong_word = strlen(wrong_word);
+    // For each difference value searches for words with that amount of differences
+    for (int seeking_diff = 1; seeking_diff <= max_diff; seeking_diff++){
+        for (int i = 0; i< dict_size; i++){ // For each word in the dictionary
             char *dict_word = dict[i], *string = NULL;
             int len_dict_word = strlen(dict_word), found_diff = -1, index = 0;
-            // While both words are equal and not over increase index
-            while (word[index] != '\0' && dict_word[index] != '\0' && tolower((unsigned char)word[index]) == tolower((unsigned char)dict_word[index]))
+            // While both words are equal and not over
+            while (dict_word[index] != '\0' && wrong_word[index] != '\0' && tolower(dict_word[index]) == tolower(wrong_word[index]))
             {
-                index++; 
+                index++; // Index stores the index of the first difference
             }
-            if (diff == 1 && dict_word[index] == '\0' && word[index] !='\0'){
-                char *part = word_in_dict(&word[index], dict, dict_size);
+            // If the dictionary word already ended then the rest of the wrong_word could be
+            // another word in the dictionary
+            if (seeking_diff == 1 && dict_word[index] == '\0' && wrong_word[index] != '\0'){
+                char *part = word_in_dict(&wrong_word[index], dict, dict_size);
                 if (part != NULL){
-                    int total_length = strlen(dict_word) + 1 + strlen(part) + 1;
-                    string = malloc(total_length);
-                    if (string){
-                        Alternative *new = malloc(sizeof(Alternative));
+                    int total_len = strlen(dict_word) + 1 + strlen(part) + 1; // Size of both words + a space + end of string char
+                    string = malloc(total_len);
+                    if (string){ // Checks if allocation was successful;
                         sprintf(string, "%s %s", dict_word, part);
                         found_diff = 1;
                     }
                 }
             }
-
-            if (found_diff == -1){
-                int count = 0, i_bad = index, i_dict = index;
-                while (word[i_bad] != '\0' || dict_word[i_dict] != '\0')
+            if (found_diff == -1){ // If no differences have been found yet
+                int count = 0, f_wrong = index, f_dict = index;
+                while (wrong_word[f_wrong] != '\0' || dict_word[f_dict] != '\0') // While at least one word is not over
                 {
-                    if (word[i_bad] == '\0'){
-                        count++;
-                        i_dict++;
+                    if (wrong_word[f_wrong] == '\0'){ // If the wrong word is over (smaller than dict_word)
+                        count++;  // Considers as error each letter that it is smaller
+                        f_dict++; // Increments only the index for dict_word because the wrong one is over
                     }
-                    else if (dict_word[i_dict] == '\0'){
+                    else if (dict_word[f_dict] == '\0'){
                         count++;
-                        i_dict++;
+                        f_wrong++;
                     }
-                    else{
-                        if (tolower(word[i_bad]) != tolower(dict_word[i_dict])){
-                            count++;
-
+                    else{ // If neither one is over
+                        if (tolower(wrong_word[f_wrong]) != tolower(dict_word[f_dict])){ // And they are different
+                            count++; // There is a difference
                         }
-                        i_bad++;
-                        i_dict++;
+                        f_wrong++;
+                        f_dict++; // Increments both indices because they are not over
                     }
                 }
-                if (count == diff){
-                    found_diff = diff;
+                if (count == seeking_diff){ // If the number of differences is what we are seeking
+                    found_diff = count;     // we update the value of found differences
                 }
 
-                if (found_diff == -1 && (index + diff) <= len_dict_word){
-                    if (strcasecmp(&word[index], &dict_word[index+diff]) == 0){
-                        found_diff = diff;
-                    }
-                }
-
-                if (found_diff == -1 && (index + diff) <= len_word){
-                    if (strcasecmp(&word[index+diff], &dict_word[index]) == 0){
-                        found_diff = diff;
+                // If we have not found the correct number of differences and the index of the first difference +
+                // the number of differences we are looking for is smaller/equal to the lenght of the dictionary
+                // word we check if there is a block of seeking_diff letters missing in the middle of the wrong word
+                if (found_diff == -1 && (index + seeking_diff) <= len_dict_word){
+                    if (strcasecmp(&wrong_word[index], &dict_word[index+seeking_diff]) == 0){
+                        found_diff = seeking_diff;
                     }
                 }
 
-                if (found_diff == -1){ // Search word in reverse
-                    int r_count = 0, r_bad = len_word - 1, r_dict = len_dict_word - 1;
+                // Same logic as before but for a block of extra letters in wrong_word
+                if (found_diff == -1 && (index + seeking_diff) <= len_wrong_word){
+                    if (strcasecmp(&wrong_word[index+seeking_diff], &dict_word[index]) == 0){
+                        found_diff = seeking_diff;
+                    }
+                }
 
-                    while (r_bad >= 0 || r_dict >= 0)
+                // Searching word in reverse if we have not found correct number of differences
+                if (found_diff == -1){
+                    int r_count = 0, r_wrong = len_wrong_word - 1, r_dict = len_dict_word - 1; // Minus one because indices start at 0
+                    // If at least one word is not over
+                    while (r_wrong >= 0 || r_dict >= 0)
                     {
-                        if (r_bad < 0){
+                        if (r_wrong < 0){ // If wrong is over we only change the index of dict and count the differences
                             r_count++;
                             r_dict--;
                         }
-                        else if (r_dict <0){
+                        else if (r_dict < 0){
                             r_count++;
-                            r_bad--;
+                            r_wrong--;
                         }
                         else{
-                            if (strcasecmp(&word[r_bad],&dict_word[r_dict]) != 0){
+                            if (tolower(wrong_word[r_wrong]) != tolower(dict_word[r_dict])){ // If words are different at current index
                                 r_count++;
                             }
-                            r_bad--;
                             r_dict--;
+                            r_wrong--;
                         }
                     }
-                    if (r_count == diff){
-                        found_diff = diff;
+                    if (r_count == seeking_diff){
+                        found_diff = r_count;
                     }
                 }
             }
-            if (found_diff == diff){
+            // If we found the correct number of differences (safeguard but same as found_diff != -1)
+            // we check if we already have a string and add a new node to the list of alternatives
+            if (found_diff == seeking_diff){
                 if (string == NULL){
                     string = strdup(dict_word);
                 }
-                if (in_Alternatives(head, string)){
-                    free(string);
+                Alternative *new_node = malloc(sizeof(Alternative));
+                if (new_node){
+                    new_node->diff = found_diff;
+                    new_node->word = string;
+                    new_node->next = NULL;
+                    head = add_node(head, new_node);
                 }
                 else{
-                    Alternative *newnode = malloc(sizeof(Alternative));
-                    if (newnode){
-                        newnode->word = string;
-                        newnode->diff = diff;
-                        newnode->next = NULL;
-                        head = add_node(head, newnode);
-                    }
-                    else{
-                        free(newnode);
-                    }
+                    free(new_node);
                 }
             }
-            else{
-                if (string){
-                    free(string);
-                }
-            }
+            else if (string){
+                free(string);
+            }            
         }
     }
     return head;
