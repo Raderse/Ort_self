@@ -7,7 +7,61 @@
 #include <ctype.h>
 
 void suggesting(char **lines, int lines_n, char **dict, int dict_size, char *out_file, int max_diff, int alts){
+    char *temp, **lines_no_punct = remove_punct(lines, lines_n);
+    int pos;
+    FILE *fptr = NULL;
+    if (out_file != NULL){
+        fptr = fopen(out_file, "w");
+        if (fptr == NULL){
+            printf("Output file cannot be opened");
+            exit(EXIT_FAILURE);
+        }
+    }
 
+    for (int i = 0; i < lines_n; i++){ // Lines
+        temp = malloc(strlen(lines_no_punct[i])+16);
+        if (temp == NULL) exit(EXIT_FAILURE);
+        pos = 0;
+        for (int j = 0; j <= (int)strlen(lines_no_punct[i]); j++){ // Character
+            if (lines_no_punct[i][j] == ' ' || lines_no_punct[i][j] == '\0' || lines_no_punct[i][j] == '\n' || lines_no_punct[i][j] == '\t'){
+                if (pos > 0){
+                    temp[pos] = '\0';
+                    if (word_in_dict(temp, dict, dict_size) == NULL){
+                        Alternative *head = NULL, *current = NULL;
+                        head = find_alternatives(temp, dict, dict_size, max_diff);
+                        printf("Erro na palavra \"%s\"\n", temp);
+                        if (head != NULL){
+                            current = head;
+                            int print_count = 0;
+                            bool is_last;
+                            while (current != NULL && print_count < alts){
+                                is_last = (current->next == NULL || print_count == alts - 1);
+                                if (fptr == NULL){
+                                    printf("%s%s", current->word, is_last ? "\n":", ");
+                                }
+                                else{
+                                    fprintf(fptr, "%s%s", current->word, is_last ? "\n":", ");
+                                }
+                                current = current->next;
+                                print_count++;
+                            }
+                        }
+                        free_Alternative(head);
+                    }
+                    pos = 0;
+                }
+            }
+            else{
+                temp[pos++] = lines_no_punct[i][j];
+            }
+        }
+        free(temp);
+    }
+    if (fptr != NULL) fclose(fptr);
+    for (int k = 0; k < lines_n; k++) {
+        free(lines_no_punct[k]);
+    }
+    free(lines_no_punct);
 }
 
 // Checks if new word is already in the list, if it is not it gets added and return is the head of the list
@@ -209,6 +263,9 @@ Alternative *find_alternatives(char *wrong_word, char **dict, int dict_size, int
 }
 
 void update_index(Alternative *head){
+    if (head == NULL){
+        return;
+    }
     int previous_index = 0;
     Alternative *current_node;
     current_node = head;
