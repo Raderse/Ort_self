@@ -35,7 +35,7 @@ void replace(char **lines, int lines_n, char **dict, int dict_size, char *out_fi
                         new->wrong = temp;
                         new->right = head_alt->word;
                         new->next = NULL;
-                        while (ispunct(temp[k]) != 0)
+                        while (ispunct(temp[k]) != 0 || isspace(temp[k]) != 0)
                         {
                             strcat(new->punct, &temp[k]);
                             k++;
@@ -51,7 +51,7 @@ void replace(char **lines, int lines_n, char **dict, int dict_size, char *out_fi
                         new->wrong = NULL;
                         new->right = head_alt->word;
                         new->next = NULL;
-                        while (ispunct(temp[k]) != 0)
+                        while (ispunct(temp[k]) != 0 || isspace(temp[k]) != 0)
                         {
                             strcat(new->punct, &temp[k]);
                             k++;
@@ -67,8 +67,8 @@ void replace(char **lines, int lines_n, char **dict, int dict_size, char *out_fi
         final->right = NULL;
         final->wrong = NULL;
         strcpy(final->punct, "");
-        int t = strlen(temp);
-        while (ispunct(temp[t]) != 0)
+        int t = strlen(temp) - 1;
+        while (ispunct(temp[t]) != 0 || isspace(temp[t]) != 0)
         {
             strcat(final->punct, &temp[t]);
             t--;
