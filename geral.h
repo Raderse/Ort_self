@@ -11,5 +11,6 @@ int valid(char c);
 int reader(char ***lines, char *file);
 char **remove_punct(char **lines, int lines_n);
 char *word_in_dict(char *word, char **dict, int dict_size);
+char *remove_punct_word(char *word);
 
 #endif

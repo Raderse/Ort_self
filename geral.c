@@ -143,3 +143,19 @@ char *word_in_dict(char *word, char **dict, int dict_size){
         char **result = bsearch(&word, dict, dict_size, sizeof(char *), compare_dic);
     return result ? *result : NULL;
 }
+
+char *remove_punct_word(char *word){
+    size_t len = strlen(word);
+    char *clean = malloc(len + 1);
+    if (clean == NULL) {
+        return NULL;
+    }
+    size_t j = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (!ispunct((unsigned char)word[i]) || word[i] == '\0') {
+            clean[j++] = word[i];
+        }
+    }
+    clean[j] = '\0';
+    return clean;
+}

@@ -6,6 +6,7 @@
 #include "geral.h"
 #include "mode1.h"
 #include "mode2.h"
+#include "mode3.h"
 
 // Function declarations
 void print_help();
@@ -95,7 +96,7 @@ int main(int argc, char *argv[]){
         break;
 
     case 3:
-
+        replace(lines, line_n, pDict, dict_size, pOut_file, diff);
         break;
     }
 }
