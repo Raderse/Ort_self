@@ -8,8 +8,8 @@
 
 void replace(char **lines, int lines_n, char **dict, int dict_size, char *out_file, int max_diff){
     char *temp;
-    FILE *fptr;
-    int pos, k;
+    FILE *fptr = NULL;
+    int pos, k, idx;
     if (out_file != NULL){
         fptr = fopen(out_file, "w");
         if (fptr == NULL){
@@ -19,70 +19,74 @@ void replace(char **lines, int lines_n, char **dict, int dict_size, char *out_fi
     }
 
     for (int i = 0; i < lines_n; i++){ // Lines
-        temp = malloc(sizeof(lines[i]));
-        Replacement *head_rep = malloc(sizeof(Replacement *));
+        temp = malloc(strlen(lines[i]) + 1);
+        Replacement *head_rep = NULL;
         if (temp == NULL) exit(EXIT_FAILURE);
         pos = 0;
-        for (int j = 0; j < strlen(lines[i]); j++){ // Character
+        for (int j = 0; j <= strlen(lines[i]); j++){ // Character
             if (lines[i][j] == ' ' || lines[i][j] == '\0' || lines[i][j] == '\n' || lines[i][j] == '\t'){
                 if (pos > 0){
                     temp[pos] = '\0';
-                    if (word_in_dict(remove_punct_word(temp), dict, dict_size) == NULL){
-                        k = 0;
-                        Alternative *head_alt = NULL;
-                        Replacement *new = NULL;
-                        head_alt = find_alternatives(remove_punct_word(temp), dict, dict_size, max_diff);
-                        new->wrong = temp;
-                        new->right = head_alt->word;
-                        new->next = NULL;
-                        while (ispunct(temp[k]) != 0 || isspace(temp[k]) != 0)
-                        {
-                            strcat(new->punct, &temp[k]);
-                            k++;
+                    
+                    Replacement *new_node = malloc(sizeof(Replacement));
+                    // Initialize punctuation buffer
+                    new_node->punct[0] = '\0'; 
+                    new_node->next = NULL;
+
+                    // 1. Extract punctuation from the end of 'temp' (e.g., "word.")
+                    // We assume the cleaned version is just the letters
+                    char *clean = remove_punct_word(temp);
+                    
+                    // Check dictionary
+                    if (word_in_dict(clean, dict, dict_size) == NULL){
+                        Alternative *head_alt = find_alternatives(clean, dict, dict_size, max_diff);
+                        new_node->wrong = strdup(temp); // Save original
+                        
+                        // SAFETY CHECK: Handle if no suggestions exist
+                        if (head_alt != NULL) {
+                            new_node->right = strdup(head_alt->word);
+                            free_Alternative(head_alt);
+                        } else {
+                            new_node->right = strdup(clean); // Fallback to cleaned original
                         }
-                        add_word(head_rep, new);
-                        free_Alternative(head_alt);
+                    } else {
+                        new_node->wrong = NULL;
+                        new_node->right = strdup(clean);
                     }
-                    else{
-                        k = 0;
-                        Alternative *head_alt = NULL;
-                        Replacement *new = NULL;
-                        head_alt = find_alternatives(remove_punct_word(temp), dict, dict_size, max_diff);
-                        new->wrong = NULL;
-                        new->right = head_alt->word;
-                        new->next = NULL;
-                        while (ispunct(temp[k]) != 0 || isspace(temp[k]) != 0)
-                        {
-                            strcat(new->punct, &temp[k]);
-                            k++;
-                        }
-                        add_word(head_rep, new);
-                        free_Alternative(head_alt);                        
+
+                    // 2. Handle Punctuation logic
+                    // Find where the word ends and punctuation begins in the original 'temp'
+                    int len = strlen(temp);
+                    int p_start = strlen(clean); // Length of the word without punct
+                    
+                    // Copy punctuation from temp (e.g., the dot in "word.")
+                    strcpy(new_node->punct, &temp[p_start]);
+
+                    // 3. Append the delimiter that triggered this block (space, newline, etc.)
+                    // We captured this in lines[i][j]
+                    int p_len = strlen(new_node->punct);
+                    if (lines[i][j] != '\0') {
+                        new_node->punct[p_len] = lines[i][j];
+                        new_node->punct[p_len+1] = '\0';
                     }
+
+                    free(clean);
+                    head_rep = add_word(head_rep, new_node);
+                    pos = 0;
                 }
             }
-        }
-        Replacement *final = malloc(sizeof(Replacement));
-        final->next = NULL;
-        final->right = NULL;
-        final->wrong = NULL;
-        strcpy(final->punct, "");
-        int t = strlen(temp) - 1;
-        while (ispunct(temp[t]) != 0 || isspace(temp[t]) != 0)
-        {
-            strcat(final->punct, &temp[t]);
-            t--;
-        }
-        add_word(head_rep, final);
-        final = head_rep;
-        while (final != NULL){
-            if (fptr == NULL){
-                printf("%s%s", final->punct, final->right);
-            }
             else{
-                fprintf(fptr, "%s%s", final->punct, final->right);
+                temp[pos++] = lines[i][j];
             }
-            final = final->next;
+        }
+        Replacement *curr = head_rep;
+        while (curr != NULL) {
+            if (fptr == NULL) {
+                printf("%s%s", curr->right, curr->punct);
+            } else {
+                fprintf(fptr, "%s%s", curr->right, curr->punct);
+            }
+            curr = curr->next;
         }
         if (fptr == NULL){
             printf("\n");
@@ -91,13 +95,14 @@ void replace(char **lines, int lines_n, char **dict, int dict_size, char *out_fi
             fprintf(fptr, "\n");
         }
         free_Replacements(head_rep);
+        free(temp);
     }
     if (fptr != NULL) fclose(fptr);
 }
 
 // Returns head
 Replacement *add_word(Replacement *head, Replacement *node){
-    if (head = NULL){
+    if (head == NULL){
         return node;
     }
     Replacement *current;
@@ -120,8 +125,4 @@ void free_Replacements(Replacement *head){
         free(temp->right);
         free(temp);
     }
-}
-
-void print_Replacement(Replacement *head){
-
 }

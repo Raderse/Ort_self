@@ -11,6 +11,5 @@ typedef struct Replacement{
 void replace(char **lines, int lines_n, char **dict, int dict_size, char *out_file, int max_diff);
 Replacement *add_word(Replacement *head, Replacement *node);
 void free_Replacements(Replacement *head);
-void print_Replacement(Replacement *head);
 
 #endif
