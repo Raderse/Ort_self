@@ -27,43 +27,26 @@ void replace(char **lines, int lines_n, char **dict, int dict_size, char *out_fi
             if (lines[i][j] == ' ' || lines[i][j] == '\0' || lines[i][j] == '\n' || lines[i][j] == '\t'){
                 if (pos > 0){
                     temp[pos] = '\0';
-                    
                     Replacement *new_node = malloc(sizeof(Replacement));
-                    // Initialize punctuation buffer
                     new_node->punct[0] = '\0'; 
                     new_node->next = NULL;
-
-                    // 1. Extract punctuation from the end of 'temp' (e.g., "word.")
-                    // We assume the cleaned version is just the letters
                     char *clean = remove_punct_word(temp);
-                    
-                    // Check dictionary
                     if (word_in_dict(clean, dict, dict_size) == NULL){
                         Alternative *head_alt = find_alternatives(clean, dict, dict_size, max_diff);
-                        new_node->wrong = strdup(temp); // Save original
-                        
-                        // SAFETY CHECK: Handle if no suggestions exist
+                        new_node->wrong = strdup(temp);
                         if (head_alt != NULL) {
                             new_node->right = strdup(head_alt->word);
                             free_Alternative(head_alt);
                         } else {
-                            new_node->right = strdup(clean); // Fallback to cleaned original
+                            new_node->right = strdup(clean);
                         }
                     } else {
                         new_node->wrong = NULL;
                         new_node->right = strdup(clean);
                     }
-
-                    // 2. Handle Punctuation logic
-                    // Find where the word ends and punctuation begins in the original 'temp'
                     int len = strlen(temp);
-                    int p_start = strlen(clean); // Length of the word without punct
-                    
-                    // Copy punctuation from temp (e.g., the dot in "word.")
+                    int p_start = strlen(clean);
                     strcpy(new_node->punct, &temp[p_start]);
-
-                    // 3. Append the delimiter that triggered this block (space, newline, etc.)
-                    // We captured this in lines[i][j]
                     int p_len = strlen(new_node->punct);
                     if (lines[i][j] != '\0') {
                         new_node->punct[p_len] = lines[i][j];
