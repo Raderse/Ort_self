@@ -9,7 +9,7 @@
 void replace(char **lines, int lines_n, char **dict, int dict_size, char *out_file, int max_diff){
     char *temp;
     FILE *fptr = NULL;
-    int pos, k, idx;
+    int pos;
     if (out_file != NULL){
         fptr = fopen(out_file, "w");
         if (fptr == NULL){
@@ -44,7 +44,6 @@ void replace(char **lines, int lines_n, char **dict, int dict_size, char *out_fi
                         new_node->wrong = NULL;
                         new_node->right = strdup(clean);
                     }
-                    int len = strlen(temp);
                     int p_start = strlen(clean);
                     strcpy(new_node->punct, &temp[p_start]);
                     int p_len = strlen(new_node->punct);
