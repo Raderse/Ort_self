@@ -76,8 +76,19 @@ void replace(char **lines, int lines_n, char **dict, int dict_size, char *out_fi
         add_word(head_rep, final);
         final = head_rep;
         while (final != NULL){
-            printf("%s%s", head_rep->punct, head_rep->right);
+            if (fptr == NULL){
+                printf("%s%s", final->punct, final->right);
+            }
+            else{
+                fprintf(fptr, "%s%s", final->punct, final->right);
+            }
             final = final->next;
+        }
+        if (fptr == NULL){
+            printf("\n");
+        }
+        else{
+            fprintf(fptr, "\n");
         }
         free_Replacements(head_rep);
     }
