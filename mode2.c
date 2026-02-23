@@ -29,7 +29,12 @@ void suggesting(char **lines, int lines_n, char **dict, int dict_size, char *out
                     if (word_in_dict(temp, dict, dict_size) == NULL){
                         Alternative *head = NULL, *current = NULL;
                         head = find_alternatives(temp, dict, dict_size, max_diff);
-                        printf("Erro na palavra \"%s\"\n", temp);
+                        if (fptr == NULL){
+                            printf("Erro na palavra \"%s\"\n", temp);
+                        }
+                        else{
+                            fprintf(fptr ,"Erro na palavra \"%s\"\n", temp);
+                        }
                         if (head != NULL){
                             current = head;
                             int print_count = 0;
